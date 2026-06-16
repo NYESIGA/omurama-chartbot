@@ -1,9 +1,6 @@
-sdk: docker
-app_file: app.py
-
 # OMURAMA AI CLOUD ASSISTANT
 
-A fully cloud-hosted multimodal AI chatbot platform built for GitHub and Hugging Face Spaces.
+A fully cloud-hosted multimodal AI chatbot platform built for GitHub and Hugging Face Spaces using Docker.
 
 ## Features
 
@@ -13,7 +10,7 @@ A fully cloud-hosted multimodal AI chatbot platform built for GitHub and Hugging
 - Supabase PostgreSQL + Storage support for user data and files
 - Embeddable widget via a single script
 - Docker deployment for Hugging Face Spaces
-- GitHub Actions CI + optional HF deploy
+- GitHub Actions CI for build, test, and deploy
 
 ## Deployment
 
@@ -32,6 +29,32 @@ A fully cloud-hosted multimodal AI chatbot platform built for GitHub and Hugging
    - `SUPABASE_KEY`
    - `JWT_SECRET`
    - `API_KEYS`
+
+### Example GitHub push
+
+```bash
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git branch -M main
+git push -u origin main
+```
+
+### Create Hugging Face Space
+
+1. Open https://huggingface.co/spaces.
+2. Create a new Space.
+3. Choose `Docker` as the SDK.
+4. Connect the Space to your GitHub repository.
+5. Add identical secrets in the Space settings.
+
+### Widget embed example
+
+```html
+<script>
+window.OMURAMA_CHATBOT_URL = "https://your-hf-space-url";
+window.OMURAMA_CHATBOT_API_KEY = "YOUR_PUBLIC_API_KEY";
+</script>
+<script src="https://your-hf-space-url/chatbot.js"></script>
+```
 
 ## Environment Variables
 
