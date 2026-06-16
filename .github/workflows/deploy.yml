@@ -1,0 +1,41 @@
+name: Deploy Omurama AI Assistant
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name: Validate application
+        run: python -m py_compile app.py
+
+      - name: Run unit tests
+        run: python -m pytest tests
+
+      - name: Build Docker image
+        run: docker build -t omurama-ai-assistant .
+
+      - name: Deploy to Hugging Face Space
+        if: success()
+        env:
+          HF_API_TOKEN: ${{ secrets.HF_API_TOKEN }}
+          HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions"
+          git remote add hf "https://huggingface:${HF_API_TOKEN}@huggingface.co/spaces/${HF_SPACE_NAME}.git"
+          git push hf HEAD:main --force
