@@ -6,14 +6,17 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
 
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v5
 
@@ -41,3 +44,9 @@ jobs:
       - name: Check Python syntax
         run: |
           python -m compileall .
+
+      - name: Push to Hugging Face Space
+        uses: huggingface/hub-action@v1
+        with:
+          repo-id: Nyesiga/omurama-ai-platform
+          repo-type: space
