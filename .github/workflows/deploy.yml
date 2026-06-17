@@ -6,19 +6,15 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
     steps:
-
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -28,7 +24,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
 
       - name: Install pytest
         run: |
@@ -41,3 +39,20 @@ jobs:
       - name: Check Python syntax
         run: |
           python -m compileall .
+
+      - name: Deploy to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+          git clone https://Nyesiga:$HF_TOKEN@huggingface.co/spaces/Nyesiga/omurama-ai-platform space_repo
+
+          rsync -av --exclude='.git' --exclude='.github' ./ space_repo/
+
+          cd space_repo
+
+          git add .
+          git commit -m "Auto deployment from GitHub" || echo "No changes to commit"
+          git push
