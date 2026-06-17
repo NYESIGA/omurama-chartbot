@@ -44,8 +44,8 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git config --global nyesiga65@gmail.com "actions@github.com"
-          git config --global NYESIGA "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
 
           git clone https://Nyesiga:$HF_TOKEN@huggingface.co/spaces/Nyesiga/omurama-ai-platform space_repo
 
